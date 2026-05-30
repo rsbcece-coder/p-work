@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Penny's Independent Work</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:    #F5CBA7;
+    --green:   #A9DFBF;
+    --blue:    #AED6F1;
+    --yellow:  #F9E79F;
+    --pink:    #E8608A;
+    --pink-light: #F9D0DF;
+    --pink-mid:   #D45480;
+    --lavender:#D2B4DE;
+    --brown:   #5C4A32;
+    --cream:   #FFF5F8;
+    --light:   #FCE8EF;
+    --mid:     #B87A90;
+    --dark:    #3B1F2B;
+    --white:   #FFFFFF;
+    --shadow:  0 4px 20px rgba(180,80,120,0.10);
+    --radius:  18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #E8608A 0%, #D45480 100%);
+    padding: 28px 20px 22px;
+    text-align: center;
+    position: relative;
+  }
+  .header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.9rem;
+    color: #FFFFFF;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  .header .subtitle {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.75);
+    margin-top: 4px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .header .date-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 0.78rem;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+  .parent-btn {
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    background: rgba(255,255,255,0.18);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── DAY TABS ── */
+  .day-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 16px 16px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex-shrink: 0;
+    background: var(--white);
+    border: 2px solid var(--light);
+    border-radius: 14px;
+    padding: 10px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .day-tab.active {
+    background: #E8608A;
+    border-color: #E8608A;
+    color: #FFFFFF;
+  }
+  .day-tab .day-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #F9D0DF;
+    color: #D45480;
+    font-size: 0.65rem;
+    font-weight: 800;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    padding: 14px 16px 0;
+  }
+  .progress-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--mid);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .progress-bar {
+    background: var(--light);
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #F9D0DF, #E8608A);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── TASKS ── */
+  .tasks-wrap { padding: 14px 16px; }
+
+  .task-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .task-card.done {
+    opacity: 0.7;
+  }
+  .task-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+  }
+  .task-check {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--light);
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+  }
+  .task-check.checked {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .task-info { flex: 1; min-width: 0; }
+  .task-name {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--dark);
+    line-height: 1.3;
+  }
+  .task-card.done .task-name {
+    text-decoration: line-through;
+    color: var(--mid);
+  }
+  .task-instruction {
+    font-size: 0.78rem;
+    color: var(--mid);
+    margin-top: 3px;
+    font-weight: 600;
+  }
+  .task-color-bar {
+    width: 6px;
+    align-self: stretch;
+    flex-shrink: 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .play-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--pink);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+  .play-btn:active { transform: scale(0.92); }
+
+  /* ── VIDEO PLAYER ── */
+  .video-wrap {
+    display: none;
+    padding: 0 16px 16px;
+  }
+  .video-wrap.open { display: block; }
+  .video-wrap iframe {
+    width: 100%;
+    border-radius: 12px;
+    border: none;
+    aspect-ratio: 16/9;
+  }
+  .video-close {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--mid);
+    margin-top: 8px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  /* ── DONE MESSAGE ── */
+  .done-banner {
+    display: none;
+    margin: 0 16px 16px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .done-banner.show { display: block; }
+  .done-banner .star { font-size: 2rem; }
+  .done-banner p {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: var(--dark);
+    margin-top: 6px;
+  }
+
+  /* ── HISTORY ── */
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: #D45480;
+    padding: 8px 16px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .history-wrap { padding: 0 16px; }
+  .history-week {
+    background: var(--white);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .history-week-header {
+    background: #E8608A;
+    color: #FFFFFF;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+  }
+  .history-table th {
+    background: var(--light);
+    color: var(--mid);
+    font-weight: 800;
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--light);
+  }
+  .history-table th:first-child { text-align: left; padding-left: 14px; }
+  .history-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--light);
+    color: var(--dark);
+  }
+  .history-table td:first-child {
+    text-align: left;
+    padding-left: 14px;
+    font-weight: 700;
+  }
+  .history-table tr:last-child td { border-bottom: none; }
+  .tick-done { color: #27AE60; font-size: 1rem; }
+  .tick-miss { color: var(--light); font-size: 0.8rem; }
+
+  /* ── PARENT MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: flex-end;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--cream);
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: #D45480;
+    margin-bottom: 6px;
+  }
+  .modal .pin-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .modal input[type="password"],
+  .modal input[type="text"],
+  .modal input[type="number"] {
+    flex: 1;
+    border: 2px solid var(--light);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    background: var(--white);
+    color: var(--dark);
+    outline: none;
+  }
+  .modal input:focus { border-color: var(--brown); }
+  .btn {
+    background: #E8608A;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 22px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn.secondary {
+    background: var(--light);
+    color: var(--brown);
+  }
+  .btn.danger {
+    background: var(--pink);
+    color: var(--white);
+  }
+  .btn.small {
+    padding: 8px 14px;
+    font-size: 0.78rem;
+  }
+
+  .task-editor {
+    background: var(--white);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .task-editor .row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .task-editor label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--mid);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .task-editor .field { flex: 1; }
+  .color-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .color-dot.selected { border-color: var(--dark); }
+
+  .add-task-btn {
+    width: 100%;
+    background: #F9D0DF;
+    color: #D45480;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+
+  .modal-close {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .week-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--mid);
+    text-align: center;
+    padding: 8px 0 0;
+  }
+
+  /* ── CONFETTI ── */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 1.2s ease-in forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Penny's Independent Work</h1>
+  
+  <div class="date-badge" id="dateBadge">Loading...</div>
+  <button class="parent-btn" onclick="openParentModal()">⚙ Parent</button>
+</div>
+
+<div class="day-tabs" id="dayTabs"></div>
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Today's Progress</span>
+    <span id="progressText">0 / 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
+<div class="tasks-wrap" id="tasksWrap"></div>
+<div class="done-banner" id="doneBanner">
+  
+  <p>All done! Great work, Penny!</p>
+</div>
+
+<div class="section-title">This Week's History</div>
+<div class="history-wrap" id="historyWrap"></div>
+
+<!-- Parent Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <h2>Parent Settings</h2>
+    <div id="pinSection">
+      <p style="font-size:0.82rem;color:var(--mid);margin-bottom:12px;font-weight:600;">Enter PIN to edit tasks</p>
+      <div class="pin-row">
+        <input type="password" id="pinInput" placeholder="Enter PIN" maxlength="4">
+        <button class="btn" onclick="checkPin()">Enter</button>
+      </div>
+      <p style="font-size:0.72rem;color:var(--mid);font-weight:600;">Default PIN: 1234 — change it below after unlocking</p>
+    </div>
+    <div id="editorSection" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#D45480;">Edit Tasks</p>
+        <button class="btn small secondary" onclick="changePinPrompt()">Change PIN</button>
+      </div>
+      <div id="changePinArea" style="display:none;background:var(--light);border-radius:12px;padding:12px;margin-bottom:12px;">
+        <p style="font-size:0.72rem;font-weight:800;color:var(--mid);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;">New PIN (4 digits)</p>
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="newPinInput" placeholder="e.g. 5678" maxlength="4" 
+            style="flex:1;border:2px solid var(--light);border-radius:10px;padding:10px 12px;font-family:Nunito,sans-serif;font-size:0.9rem;background:#fff;color:var(--dark);outline:none;">
+          <button class="btn small" onclick="saveNewPin()">Save</button>
+        </div>
+      </div>
+      <p id="pinChangedMsg" style="display:none;font-size:0.78rem;font-weight:800;color:#27AE60;margin-bottom:10px;">PIN updated!</p>
+      <div id="taskEditors"></div>
+      <button class="add-task-btn" onclick="addTask()">+ Add New Task</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" style="flex:1" onclick="saveTasks()">Save Changes</button>
+        <button class="btn secondary modal-close" style="flex:1" onclick="closeModal()">Cancel</button>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:2px solid var(--light);">
+        <p style="font-size:0.75rem;font-weight:800;color:var(--mid);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">History Export</p>
+        <button class="btn secondary" style="width:100%" onclick="downloadHistory()">Download History as CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+const COLORS = ['F5CBA7','A9DFBF','AED6F1','F9E79F','F1948A','D2B4DE','A3E4D7','F2ECD8'];
+const STORAGE_KEY = 'penny_work_v1';
+const PIN_KEY = 'penny_pin_v1';
+
+let currentDay = getCurrentDay();
+let state = loadState();
+
+function getCurrentDay() {
+  const d = new Date().getDay(); // 0=Sun,1=Mon...
+  const map = {1:0,2:1,3:2,4:3,5:4};
+  return map[d] !== undefined ? map[d] : 0;
+}
+
+function getWeekKey() {
+  const now = new Date();
+  const jan1 = new Date(now.getFullYear(), 0, 1);
+  const week = Math.ceil(((now - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return `${now.getFullYear()}-W${week}`;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {
+    tasks: [
+      { id: 1, name: 'XtraMath', instruction: '5 minutes — addition and subtraction', color: 'A9DFBF', videoId: '' },
+      { id: 2, name: 'Copywork', instruction: 'Copy 2-3 sentences neatly', color: 'AED6F1', videoId: '' },
+      { id: 3, name: 'Math Workbook', instruction: 'Complete one page', color: 'A3E4D7', videoId: '' },
+      { id: 4, name: 'Nature Journal', instruction: 'Draw or write what you observe outside', color: 'F9E79F', videoId: '' },
+      { id: 5, name: 'Handicraft Practice', instruction: 'Work on your current project', color: 'D2B4DE', videoId: '' },
+    ],
+    checks: {},   // { 'weekKey': { 'taskId-dayIdx': true } }
+    history: [],  // saved weeks
+  };
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function getChecks() {
+  const wk = getWeekKey();
+  if (!state.checks[wk]) state.checks[wk] = {};
+  return state.checks[wk];
+}
+
+function isChecked(taskId, dayIdx) {
+  return !!getChecks()[`${taskId}-${dayIdx}`];
+}
+
+function toggleCheck(taskId, dayIdx) {
+  const checks = getChecks();
+  const key = `${taskId}-${dayIdx}`;
+  checks[key] = !checks[key];
+  saveState();
+  renderTasks();
+  renderDayTabs();
+  renderHistory();
+  checkAllDone();
+}
+
+// ── DATE ────────────────────────────────────────────────────────────────────
+function updateDate() {
+  const now = new Date();
+  const opts = { weekday:'long', month:'long', day:'numeric', year:'numeric' };
+  document.getElementById('dateBadge').textContent = now.toLocaleDateString('en-PH', opts);
+}
+
+// ── DAY TABS ────────────────────────────────────────────────────────────────
+function renderDayTabs() {
+  const wrap = document.getElementById('dayTabs');
+  wrap.innerHTML = '';
+  DAYS.forEach((day, idx) => {
+    const doneCount = state.tasks.filter(t => isChecked(t.id, idx)).length;
+    const btn = document.createElement('button');
+    btn.className = 'day-tab' + (idx === currentDay ? ' active' : '');
+    btn.innerHTML = day + (doneCount > 0 ? `<span class="day-count">${doneCount}</span>` : '');
+    btn.onclick = () => { currentDay = idx; renderDayTabs(); renderTasks(); checkAllDone(); };
+    wrap.appendChild(btn);
+  });
+}
+
+// ── TASKS ────────────────────────────────────────────────────────────────────
+function renderTasks() {
+  const wrap = document.getElementById('tasksWrap');
+  wrap.innerHTML = '';
+
+  const done = state.tasks.filter(t => isChecked(t.id, currentDay)).length;
+  const total = state.tasks.length;
+  document.getElementById('progressText').textContent = `${done} / ${total}`;
+  document.getElementById('progressFill').style.width = total ? `${(done/total)*100}%` : '0%';
+
+  state.tasks.forEach(task => {
+    const checked = isChecked(task.id, currentDay);
+    const card = document.createElement('div');
+    card.className = 'task-card' + (checked ? ' done' : '');
+
+    const hasVideo = task.videoId && task.videoId.trim() !== '';
+
+    card.innerHTML = `
+      <div class="task-main">
+        <button class="task-check ${checked ? 'checked' : ''}" onclick="toggleCheck(${task.id}, ${currentDay})">
+          ${checked ? '✓' : ''}
+        </button>
+        <div class="task-info">
+          <div class="task-name">${task.name}</div>
+          ${task.instruction ? `<div class="task-instruction">${task.instruction}</div>` : ''}
+        </div>
+        ${hasVideo ? `<button class="play-btn" onclick="toggleVideo(${task.id})" title="Watch video">▶</button>` : ''}
+        <div class="task-color-bar" style="background:#${task.color}"></div>
+      </div>
+      ${hasVideo ? `
+      <div class="video-wrap" id="video-${task.id}">
+        <iframe src="https://www.youtube.com/embed/${task.videoId}?rel=0&modestbranding=1&playsinline=1"
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          webkit-allowfullscreen
+          playsinline>
+        </iframe>
+        <span class="video-close" onclick="toggleVideo(${task.id})">✕ Close video</span>
+      </div>` : ''}
+    `;
+    wrap.appendChild(card);
+  });
+}
+
+function toggleVideo(taskId) {
+  const vw = document.getElementById(`video-${taskId}`);
+  if (!vw) return;
+  const isOpen = vw.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.video-wrap.open').forEach(v => {
+    if (v !== vw) {
+      v.classList.remove('open');
+      // pause by clearing src then restoring
+      const iframe = v.querySelector('iframe');
+      if (iframe) { const s = iframe.src; iframe.src = ''; iframe.src = s; }
+    }
+  });
+  if (!isOpen) vw.classList.add('open');
+}
+
+function checkAllDone() {
+  const done = state.tasks.filter(t => isChecked(t.id, currentDay)).length;
+  const banner = document.getElementById('doneBanner');
+  if (done === state.tasks.length && state.tasks.length > 0) {
+    banner.classList.add('show');
+    if (done === state.tasks.length) launchConfetti();
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function launchConfetti() {
+  const colors = ['#F5CBA7','#A9DFBF','#AED6F1','#F9E79F','#F1948A','#D2B4DE'];
+  for (let i = 0; i < 30; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.top = '-20px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+      c.style.animationDelay = Math.random() * 0.4 + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2000);
+    }, i * 40);
+  }
+}
+
+// ── HISTORY ─────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const wrap = document.getElementById('historyWrap');
+  wrap.innerHTML = '';
+  const wk = getWeekKey();
+  const checks = state.checks[wk] || {};
+
+  if (state.tasks.length === 0) {
+    wrap.innerHTML = '<p style="color:var(--mid);font-size:0.82rem;padding:0 4px 16px;font-weight:600;">No tasks yet.</p>';
+    return;
+  }
+
+  const block = document.createElement('div');
+  block.className = 'history-week';
+
+  const checkedCount = Object.values(checks).filter(Boolean).length;
+  const total = state.tasks.length * 5;
+
+  block.innerHTML = `
+    <div class="history-week-header">
+      <span>This Week</span>
+      <span>${checkedCount} / ${total} tasks completed</span>
+    </div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Task</th>
+          ${DAYS.map(d => `<th>${d}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${state.tasks.map(t => `
+          <tr>
+            <td>${t.name}</td>
+            ${DAYS.map((_,di) => `
+              <td>${checks[`${t.id}-${di}`] ? '<span class="tick-done">✓</span>' : '<span class="tick-miss">·</span>'}</td>
+            `).join('')}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  wrap.appendChild(block);
+
+  // Past weeks
+  const pastWeeks = Object.keys(state.checks).filter(k => k !== wk).sort().reverse().slice(0, 8);
+  pastWeeks.forEach(wkKey => {
+    const pastChecks = state.checks[wkKey] || {};
+    const pastCount = Object.values(pastChecks).filter(Boolean).length;
+    const pastBlock = document.createElement('div');
+    pastBlock.className = 'history-week';
+    pastBlock.innerHTML = `
+      <div class="history-week-header">
+        <span>${wkKey}</span>
+        <span>${pastCount} / ${total} completed</span>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr><th>Task</th>${DAYS.map(d=>`<th>${d}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+          ${state.tasks.map(t => `
+            <tr>
+              <td>${t.name}</td>
+              ${DAYS.map((_,di) => `
+                <td>${pastChecks[`${t.id}-${di}`] ? '<span class="tick-done">✓</span>' : '<span class="tick-miss">·</span>'}</td>
+              `).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+    wrap.appendChild(pastBlock);
+  });
+}
+
+// ── PARENT MODAL ─────────────────────────────────────────────────────────────
+function openParentModal() {
+  document.getElementById('pinSection').style.display = 'block';
+  document.getElementById('editorSection').style.display = 'none';
+  document.getElementById('pinInput').value = '';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function checkPin() {
+  const entered = document.getElementById('pinInput').value;
+  const stored = localStorage.getItem(PIN_KEY) || '1234';
+  if (entered === stored) {
+    document.getElementById('pinSection').style.display = 'none';
+    document.getElementById('editorSection').style.display = 'block';
+    renderTaskEditors();
+  } else {
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').placeholder = 'Wrong PIN, try again';
+    setTimeout(() => document.getElementById('pinInput').placeholder = 'Enter PIN', 2000);
+  }
+}
+
+function changePinPrompt() {
+  const el = document.getElementById('changePinArea');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveNewPin() {
+  const val = document.getElementById('newPinInput').value.trim();
+  if (/^\d{4}$/.test(val)) {
+    localStorage.setItem(PIN_KEY, val);
+    document.getElementById('newPinInput').value = '';
+    document.getElementById('changePinArea').style.display = 'none';
+    document.getElementById('pinChangedMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('pinChangedMsg').style.display = 'none', 2000);
+  } else {
+    document.getElementById('newPinInput').placeholder = 'Must be 4 digits';
+  }
+}
+
+function renderTaskEditors() {
+  const wrap = document.getElementById('taskEditors');
+  wrap.innerHTML = '';
+  state.tasks.forEach((task, idx) => {
+    const div = document.createElement('div');
+    div.className = 'task-editor';
+    div.innerHTML = `
+      <div class="row">
+        <div class="field">
+          <label>Task Name</label>
+          <input type="text" value="${task.name}" id="ename-${task.id}" placeholder="Task name">
+        </div>
+        <button class="btn danger small" onclick="deleteTask(${task.id})" style="margin-top:18px;">✕</button>
+      </div>
+      <div class="field" style="margin-bottom:8px;">
+        <label>Instruction for Penny</label>
+        <input type="text" value="${task.instruction}" id="einst-${task.id}" placeholder="e.g. Do 5 minutes">
+      </div>
+      <div class="field" style="margin-bottom:8px;">
+        <label>YouTube Video ID (optional) — e.g. dQw4w9WgXcQ</label>
+        <input type="text" value="${task.videoId}" id="evid-${task.id}" placeholder="Leave blank if no video">
+      </div>
+      <div>
+        <label>Color</label>
+        <div class="color-picker">
+          ${COLORS.map(c => `
+            <div class="color-dot ${task.color === c ? 'selected' : ''}"
+              style="background:#${c}"
+              onclick="selectColor(${task.id}, '${c}', this)">
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    wrap.appendChild(div);
+  });
+}
+
+function selectColor(taskId, color, el) {
+  el.closest('.color-picker').querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+  const task = state.tasks.find(t => t.id === taskId);
+  if (task) task.color = color;
+}
+
+function addTask() {
+  const newId = Date.now();
+  state.tasks.push({ id: newId, name: 'New Task', instruction: '', color: 'A9DFBF', videoId: '' });
+  renderTaskEditors();
+}
+
+function deleteTask(taskId) {
+  if (confirm('Remove this task?')) {
+    state.tasks = state.tasks.filter(t => t.id !== taskId);
+    renderTaskEditors();
+  }
+}
+
+function saveTasks() {
+  state.tasks.forEach(task => {
+    const nameEl = document.getElementById(`ename-${task.id}`);
+    const instEl = document.getElementById(`einst-${task.id}`);
+    const vidEl  = document.getElementById(`evid-${task.id}`);
+    if (nameEl) task.name = nameEl.value.trim() || task.name;
+    if (instEl) task.instruction = instEl.value.trim();
+    if (vidEl)  task.videoId = vidEl.value.trim();
+  });
+  saveState();
+  closeModal();
+  renderTasks();
+  renderHistory();
+}
+
+// Close modal on overlay tap
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// PIN enter key
+document.getElementById('pinInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPin();
+});
+
+// ── DOWNLOAD HISTORY ─────────────────────────────────────────────────────────
+function downloadHistory() {
+  const rows = [];
+  // Header row
+  rows.push(['Week', 'Task', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].join(','));
+
+  const allWeeks = Object.keys(state.checks).sort().reverse();
+  if (allWeeks.length === 0) {
+    alert('No history yet to download.');
+    return;
+  }
+
+  allWeeks.forEach(wk => {
+    const checks = state.checks[wk] || {};
+    state.tasks.forEach(task => {
+      const dayResults = DAYS.map((_, di) => checks[`${task.id}-${di}`] ? 'Done' : '');
+      rows.push([wk, `"${task.name}"`, ...dayResults].join(','));
+    });
+    rows.push(''); // blank row between weeks
+  });
+
+  const csv = rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Penny_IndependentWork_History.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+updateDate();
+renderDayTabs();
+renderTasks();
+renderHistory();
+checkAllDone();
+</script>
+</body>
+</html>
